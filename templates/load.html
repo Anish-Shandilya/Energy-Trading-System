@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+  <h1>LOAD SCHEDULING</h1>
+  <form id="load-form" method="POST">
+    <br>
+    <center><a href="{{ url_for('dashboard', user_id=user_id) }}" class="btn">Back to User Dashboard</a></center>
+    <br>
+      <table>
+          <thead>
+              <tr>
+                  <th>Time Period</th>
+                  <th>A (120W)</th>   <!-- Updated -->
+                  <th>B (2000W)</th>   <!-- Updated -->
+                  <th>C (300W)</th>   <!-- Updated -->
+                  <th>D (1000W)</th>  <!-- Updated -->
+                  <th>Misc. (580W)</th> <!-- Updated -->
+                  <th>Total Load (W)</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for hour in range(24) %}
+              <tr>
+                  <td>{{ '%02d:00 - %02d:00' % (hour, (hour + 1) % 24) }}</td>
+                  {% for load in ['A', 'B', 'C', 'D', 'Misc'] %}
+                  <td>
+                      <label class="switch">
+                          <input class="cb" type="checkbox" name="{{ load }}_{{ hour }}" 
+                          {% if load_data is not none and load_data.at[hour, load] > 0 %}checked{% endif %}>
+                          <span class="toggle">
+                            <span class="left">off</span>
+                            <span class="right">on</span>
+                          </span>
+                      </label>
+                  </td>
+                  {% endfor %}
+                  <td id="total-load-{{ hour }}">{{ total_loads[hour] }}</td> <!-- Display total load -->
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </form>
+</div>
+
+<script>
+  // Function to send form data to the server and update the total loads
+  function saveLoadData() {
+      const form = document.getElementById('load-form');
+      const formData = new FormData(form);
+
+      fetch('/save_load_data/{{ user_id }}', {
+          method: 'POST',
+          body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              // Update total loads in the table
+              for (let hour = 0; hour < 24; hour++) {
+                  document.getElementById(`total-load-${hour}`).innerText = data.total_loads[hour];
+              }
+              console.log('Dashboard data and total loads updated successfully.');
+          } else {
+              console.error('Failed to update total loads.');
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  }
+
+  // Set an interval to save data and update total loads every 5 milliseconds
+  setInterval(saveLoadData, 500);
+</script>
+
+
+
+
+<style>
+    /* From Uiverse.io by r7chardgh */ 
+/* The switch - the box around the slider */
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 5em;
+  height: 2.5em;
+  user-select: none;
+  margin-left: -70px;
+}
+
+/* Hide default HTML checkbox */
+.switch .cb {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.toggle {
+  position: absolute;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(158, 156, 156);
+  border-radius: 0.1em;
+  transition: 0.4s;
+  text-transform: uppercase;
+  font-weight: 700;
+  overflow: hidden;
+  box-shadow: -0.3em 0 0 0 rgb(158, 156, 156), -0.3em 0.3em 0 0 rgb(158, 156, 156),
+    0.3em 0 0 0 rgb(158, 156, 156), 0.3em 0.3em 0 0 rgb(158, 156, 156), 0 0.3em 0 0 rgb(158, 156, 156);
+}
+
+.toggle > .left {
+  position: absolute;
+  display: flex;
+  width: 50%;
+  height: 88%;
+  background-color: #f3f3f3;
+  color: #373737;
+  left: 0;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  transform-origin: right;
+  transform: rotateX(10deg);
+  transform-style: preserve-3d;
+  transition: all 150ms;
+}
+
+.left::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: rgb(206, 206, 206);
+  transform-origin: center left;
+  transform: rotateY(90deg);
+}
+
+.left::after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: rgb(112, 112, 112);
+  transform-origin: center bottom;
+  transform: rotateX(90deg);
+}
+
+.toggle > .right {
+  position: absolute;
+  display: flex;
+  width: 50%;
+  height: 88%;
+  background-color: #f3f3f3;
+  color: rgb(206, 206, 206);
+  right: 1px;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  transform-origin: left;
+  transform: rotateX(10deg) rotateY(-45deg);
+  transform-style: preserve-3d;
+  transition: all 150ms;
+}
+
+.right::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: rgb(206, 206, 206);
+  transform-origin: center right;
+  transform: rotateY(-90deg);
+}
+
+.right::after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: rgb(112, 112, 112);
+  transform-origin: center bottom;
+  transform: rotateX(90deg);
+}
+
+.switch input:checked + .toggle > .left {
+  transform: rotateX(10deg) rotateY(45deg);
+  color: rgb(206, 206, 206);
+}
+
+.switch input:checked + .toggle > .right {
+  transform: rotateX(10deg) rotateY(0deg);
+  color: #487bdb;
+}
+
+    /* From Uiverse.io by cssbuttons-io */ 
+.btn {
+ position: relative;
+ font-size: 17px;
+ text-transform: uppercase;
+ text-decoration: none;
+ padding: 1em 2.5em;
+ display: inline-block;
+ border-radius: 6em;
+ transition: all .2s;
+ border: none;
+ font-family: inherit;
+ font-weight: 500;
+ color: black;
+ background-color: white;
+ font-family:Georgia, 'Times New Roman', Times, serif
+}
+
+.btn:hover {
+ transform: translateY(-3px);
+ box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+ transform: translateY(-1px);
+ box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+ font-family:Georgia, 'Times New Roman', Times, serif
+}
+
+.btn::after {
+ content: "";
+ display: inline-block;
+ height: 100%;
+ width: 100%;
+ border-radius: 100px;
+ position: absolute;
+ top: 0;
+ left: 0;
+ z-index: -1;
+ transition: all .4s;
+}
+
+.btn::after {
+ background-color: #fff;
+}
+
+.btn:hover::after {
+ transform: scaleX(1.4) scaleY(1.6);
+ opacity: 0;
+}
+
+    .text {
+    text-align: center;
+    color: white;
+    font-family:Georgia, 'Times New Roman', Times, serif
+     /* Adjust the font size as needed */
+}
+
+/* Add spacing between table cells */
+table td {
+    padding: 50px; /* Adds space inside each cell */
+    padding-right: 65px;
+}
+
+/* Optional: Add margin to checkbox to create more space around each switch */
+
+
+/* Optional: Add a border to table for better visibility */
+table {
+    border-collapse: collapse; /* Ensures borders do not double up */
+    border: 1px solid #ddd; /* Light border around the table */
+}
+
+/* Optional: Add border to cells for better visibility */
+table th, table td {
+    border: 1px solid #ddd;
+}
+
+
+
+
+    
+
+    
+    .form-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 1000px;
+            font-family:Georgia, 'Times New Roman', Times, serif
+            /* height: 800px; */
+        }
+    
+</style>
+{% endblock %}

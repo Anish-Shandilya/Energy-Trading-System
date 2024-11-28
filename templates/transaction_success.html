@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Transaction Successful{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1 class="text">Transaction Complete</h1>
+    <p class="text">The following transaction has been completed:</p>
+
+    <h2 class="text">Producer:</h2>
+    <p class="text">ID: {{ producer.user_id }}</p>
+    <p class="text">Amount of Power Sold: {{ producer.amount_of_power }} kWh</p>
+    <p class="text">Price: {{ producer.price }} per kWh</p>
+
+    <h2 class="text">Consumer:</h2>
+    <p class="text">ID: {{ consumer.user_id }}</p>
+    <p class="text">Amount of Power Bought: {{ consumer.amount_of_power }} kWh</p>
+    <p class="text">Price: {{ consumer.price }} per kWh</p>
+
+    <a href="{{ url_for('dashboard', user_id=consumer.user_id) }}" class="btn">Go to Dashboard</a>
+</div>
+{% endblock %}

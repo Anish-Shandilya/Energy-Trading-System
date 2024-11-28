@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        /* Background Image and Layout */
+        body {
+            background-image: url('{{ url_for('static', filename='1.jpg') }}');
+            background-size: cover;
+            background-repeat: radialGradient(0 0);
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .image-container {
+        width: 90%;  
+        /* height: 100%; */
+        padding: 5%;
+        margin: auto;
+        box-sizing: border-box;  
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;  
+            display: block;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            font-family:Georgia, 'Times New Roman', Times, serif
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            font-size: 18px;
+            font-family:Georgia, 'Times New Roman', Times, serif
+        }
+
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            font-family:Georgia, 'Times New Roman', Times, serif
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 100px;
+            font-family:Georgia, 'Times New Roman', Times, serif
+        }
+
+        /* Form Container (Black Box) */
+        .form-container {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 800px;
+            font-family:Georgia, 'Times New Roman', Times, serif
+            /* height: 800px; */
+        }
+
+        /* Error Container (Red Box) */
+        .error-container {
+            background-color: rgba(255, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: darkred;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 300px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            font-family:Georgia, 'Times New Roman', Times, serif
+        }
+
+        /* Form Elements Styling */
+        input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            background-color: lightgray;
+        }
+
+        .text {
+    scale: 150%;
+    text-align: center;
+    color: rgb(0, 0, 0);
+    font-family:Georgia, 'Times New Roman', Times, serif
+    
+    
+    /* Adjust the font size as needed */
+
+
+
+   
+}
+.imga{
+    width: 70px; /* Adjust width as needed */
+    height: auto;
+        
+     position: absolute;
+     top: 5px;
+            left: 5px;
+    
+
+    }
+
+    .imgb{
+        width: 100px; /* Adjust width as needed */
+    height: auto;
+        
+     position: absolute;
+     top: 30px;
+            left: 80px;
+    }
+
+    </style>
+</head>
+<body>
+    
+    <div class="navbar">
+        <img src="./static/3.png" alt="" class="imga">
+        <img src="./static/4.jpg" alt="" class="imgb">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('signup') }}">Signup</a>
+    </div>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
